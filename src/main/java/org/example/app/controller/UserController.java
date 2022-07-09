@@ -7,13 +7,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.app.dto.UserDTO;
 import org.example.app.manager.UserManager;
+import org.example.framework.security.Authentication;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor // генерирует конструктор только для final non-static полей
 public class UserController {
     private final UserManager manager;
@@ -21,24 +23,16 @@ public class UserController {
 
     @RequestMapping("/users.getAll")
     public void getAll(final HttpServletRequest req, final HttpServletResponse res) throws ServletException, IOException {
-        // TODO:
-        //  1. req - параметры
-        //  2. передать параметры в manager'а
-        //  3. записать ответ с помощью Gson
         final List<UserDTO> responseDTO = manager.getAll();
         res.getWriter().write(gson.toJson(responseDTO));
     }
 
-    // TODO: http://localhost:8080?users.getById?id=1
-    @RequestMapping("/users.getById")
-    public void getById(final HttpServletRequest req, final HttpServletResponse res) throws ServletException, IOException {
-        // TODO:
-        //  1. req - параметры
-        //  2. передать параметры в manager'а
-        //  3. записать ответ с помощью Gson
-        final long id = Long.parseLong(req.getParameter("id"));
+    // TODO: http://localhost:8080/users/1
+    @GetMapping("/users/{id}")
+    public UserDTO getById(@RequestAttribute final Authentication authentication, @PathVariable final long id, final HttpServletResponse res) throws ServletException, IOException {
+        // final long id = Long.parseLong(req.getParameter("id")); // req.getParameter - String
         final UserDTO responseDTO = manager.getById(id);
-        res.getWriter().write(gson.toJson(responseDTO));
+        return responseDTO;
     }
 
     @RequestMapping("/users.create")

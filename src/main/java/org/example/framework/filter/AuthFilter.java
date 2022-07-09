@@ -69,7 +69,7 @@ public class AuthFilter extends HttpFilter {
 
         // TODO: request достаточно часто используют для передачи через атрибуты доп.значений (например, аутентификации)
         final Authentication authentication = new Authentication(login);
-        req.setAttribute("Authentication", authentication);
+        req.setAttribute("authentication", authentication);
 
         chain.doFilter(req, res);
     }
